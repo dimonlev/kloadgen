@@ -45,6 +45,8 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import io.confluent.kafka.schemaregistry.protobuf.ProtobufSchemaProvider;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.coru.kloadgen.model.PropertyMapping;
@@ -171,7 +173,7 @@ public class SchemaRegistryConfigPropertyEditor extends PropertyEditorSupport im
                     originals.put(USER_INFO_CONFIG,schemaProperties.get(SCHEMA_REGISTRY_USERNAME_KEY) + ":" + schemaProperties.get(SCHEMA_REGISTRY_PASSWORD_KEY));
                 }
             }
-            SchemaRegistryClient schemaRegistryClient = new CachedSchemaRegistryClient(List.of(getAsText()), 1000, List.of(new AvroSchemaProvider(), new JsonSchemaProvider()), originals);
+            SchemaRegistryClient schemaRegistryClient = new CachedSchemaRegistryClient(List.of(getAsText()), 1000, List.of(new ProtobufSchemaProvider(), new AvroSchemaProvider(), new JsonSchemaProvider()), originals);
 
             List<String> subjects = new ArrayList<>(schemaRegistryClient.getAllSubjects());
             JMeterContextService.getContext().getProperties().setProperty(SCHEMA_REGISTRY_URL, checkPropertyOrVariable(schemaRegistryUrl.getText()));

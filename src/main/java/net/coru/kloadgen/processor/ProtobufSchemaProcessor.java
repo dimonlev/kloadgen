@@ -7,6 +7,7 @@ import com.squareup.wire.schema.internal.parser.ProtoFileElement;
 import io.confluent.kafka.schemaregistry.ParsedSchema;
 import io.confluent.kafka.schemaregistry.client.SchemaMetadata;
 import io.confluent.kafka.schemaregistry.protobuf.ProtobufSchema;
+import io.confluent.kafka.schemaregistry.protobuf.dynamic.DynamicSchema;
 import net.coru.kloadgen.exception.KLoadGenException;
 import net.coru.kloadgen.model.FieldValueMapping;
 import net.coru.kloadgen.randomtool.generator.ProtoBufGeneratorTool;
@@ -191,7 +192,12 @@ public class ProtobufSchemaProcessor extends SchemaProcessorLib {
     @NotNull
     private ProtobufSchema getProtobufSchema() {
         String schemaToString = schema.toSchema();
-        return new ProtobufSchema(schemaToString);
+        return new ProtobufSchema(schemaToString) {
+            @Override
+            public DynamicSchema toDynamicSchema(){
+                return  this.toDynamicSchema(DEFAULT_NAME + "." + DEFAULT_NAME);
+            }
+        };
     }
 
     private FieldValueMapping processFieldValueMappingAsRecordArray(ArrayDeque<FieldValueMapping> fieldExpMappingsQueue, DynamicMessage.Builder messageBuilder, String fieldName) {
